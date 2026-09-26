@@ -20,7 +20,8 @@ data class GitHubUiState(
     val error:String?=null,
     val securityAlert:Boolean=false,
     val confidence:Int=0,
-    val maliciousText:String?=null
+    val maliciousText:String?=null,
+    val pullRequestNumber:Int?=null
 )
 
 class GitHubViewModel(
@@ -46,12 +47,41 @@ class GitHubViewModel(
         }
     }
 
+    fun forceReject() {
+        val pullRequestNumber = _uiState.value.pullRequestNumber ?: return
+
+        viewModelScope.launch{
+            _uiState.value = _uiState.value.copy(
+                isLoading = true,
+                error = null
+            )
+
+            try{
+                withContext(Dispatchers.IO){
+                    repository.updatePullRequest(pullRequestNumber)
+                }
+
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false
+                )
+
+            }   catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = e.message ?: "Error, can't close PR"
+                )
+            }
+
+        }
+    }
+
     private suspend fun fetchGitHubData(){
         _uiState.value = _uiState.value.copy(
             isLoading = true,
             securityAlert = false,
             confidence = 0,
-            maliciousText = null
+            maliciousText = null,
+            pullRequestNumber = null
         )
 
         try {
@@ -76,7 +106,8 @@ class GitHubViewModel(
                             isLoading = false,
                             securityAlert = true,
                             confidence = result.confidence,
-                            maliciousText = comment.body
+                            maliciousText = comment.body,
+                            pullRequestNumber = pullRequest.number
                         )
 
                         return

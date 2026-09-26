@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     GitOpsScreen(
                         uiState = uiState,
+                        viewModel = viewModel,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -53,6 +54,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GitOpsScreen(
     uiState: GitHubUiState,
+    viewModel: GitHubViewModel,
     modifier: Modifier = Modifier
 ){
     val backgroundColor = if (uiState.securityAlert) {
@@ -101,7 +103,7 @@ fun GitOpsScreen(
                 }) { Text(text = "Force Merge") }
 
                 Button(onClick = {
-                    //REJECT
+                    viewModel.forceReject()
                 }) { Text(text = "Force Reject") }
             }
 

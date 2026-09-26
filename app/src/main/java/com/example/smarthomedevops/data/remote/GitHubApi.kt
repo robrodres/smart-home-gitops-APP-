@@ -6,8 +6,14 @@ import retrofit2.http.Query
 import retrofit2.http.PATCH
 import retrofit2.http.Body
 import retrofit2.http.PUT
+//LAB 1
 import com.example.smarthomedevops.data.model.GitHubPullRequest
 import com.example.smarthomedevops.data.model.GitHubIssueComment
+//LAB 2
+import com.example.smarthomedevops.data.model.GitHubFileContent
+import com.example.smarthomedevops.data.model.GitHubPRUpdateRequest
+import com.example.smarthomedevops.data.model.GitHubFileUpdateRequest
+import com.example.smarthomedevops.data.model.GitHubFileUpdateResponse
 
 interface GitHubApi {
 
@@ -35,6 +41,7 @@ interface GitHubApi {
         @Path("pull_number") pullNumber:Int,
         @Body body : GitHubPRUpdateRequest
     ): GitHubPullRequest
+
 
     @GET("repos/{owner}/{repo}/contents/{path}")
     suspend fun getFileContent(
