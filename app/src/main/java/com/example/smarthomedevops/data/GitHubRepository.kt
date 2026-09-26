@@ -2,6 +2,7 @@ package com.example.smarthomedevops.data
 
 import com.example.smarthomedevops.data.model.GitHubPullRequest
 import com.example.smarthomedevops.data.model.GitHubIssueComment
+import com.example.smarthomedevops.data.model.GitHubPRUpdateRequest
 import com.example.smarthomedevops.data.remote.GitHubApi
 import com.example.smarthomedevops.data.remote.RetrofitClient
 
@@ -20,6 +21,15 @@ class GitHubRepository(
             owner="robrodres",
             repo="smart-home-gitops",
             issueNumber=issueNumber
+        )
+    }
+
+    suspend fun updatePullRequest(pullNumber:Int) {
+        api.updatePullRequest(
+            owner="robrodres",
+            repo="smart-home-gitops",
+            pullNumber = pullNumber,
+            body = GitHubPRUpdateRequest(state="closed")
         )
     }
 }

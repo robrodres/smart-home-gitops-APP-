@@ -34,7 +34,7 @@ interface GitHubApi {
         @Path("repo") repo:String,
         @Path("pull_number") pullNumber:Int,
         @Body body : GitHubPRUpdateRequest
-    ): GithubPullRequest
+    ): GitHubPullRequest
 
     @GET("repos/{owner}/{repo}/contents/{path}")
     suspend fun getFileContent(
@@ -44,10 +44,11 @@ interface GitHubApi {
         @Query("ref")ref:String="main"
     ): GitHubFileContent
 
-    @PUT("repo/{owner}/{repo}/contents/{path}")
+    @PUT("repos/{owner}/{repo}/contents/{path}")
     suspend fun updateFileContent(
         @Path("owner")owner:String,
         @Path("repo")repo:String,
+        @Path("path")path:String,
         @Body body : GitHubFileUpdateRequest
     ): GitHubFileUpdateResponse
 
