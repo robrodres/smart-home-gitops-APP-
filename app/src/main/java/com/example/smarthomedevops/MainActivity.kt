@@ -99,7 +99,7 @@ fun GitOpsScreen(
 
             {
                 Button(onClick = {
-                    //MERGE
+                    viewModel.forceMerge()
                 }) { Text(text = "Force Merge") }
 
                 Button(onClick = {

@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.example.smarthomedevops.domain.DeceptionDetector
+import android.util.Base64
+import com.google.gson.JsonParser
+import com.google.gson.GsonBuilder
 
 
 
@@ -73,6 +76,71 @@ class GitHubViewModel(
             }
 
         }
+    }
+
+    fun forceMerge()  {
+        val pullRequestNumber = _uiState.value.pullRequestNumber ?: return
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                isLoading = true,
+                error = null
+            )
+
+            try {
+                withContext(Dispatchers.IO) {
+
+                    val file = repository.getFileContent()
+
+                    val updateContent = prepareMergedField(
+                        file.content
+                    )
+
+                    repository.updateFileContent(
+                        content = updateContent,
+                        sha = file.sha
+                    )
+
+                    repository.updatePullRequest(
+                        pullRequestNumber
+                    )
+                }
+
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false
+                )
+            } catch(e: Exception) {
+                _uiState.value = _uiState.value.copy (
+                    isLoading = false,
+                    error = e.message ?: "Error, can't merge PR"
+                )
+            }
+        }
+    }
+
+
+    private fun prepareMergedField(encodedContent: String): String {
+
+        val decodedContent = String(
+            Base64.decode(encodedContent, Base64.DEFAULT)
+        )
+
+        val jsonObject = JsonParser.parseString(decodedContent).asJsonObject
+
+        jsonObject.addProperty("target_temperature", 17.0)
+        jsonObject.addProperty("last_updated_by", "Android-Operator")
+
+        val gson = GsonBuilder()
+            .setPrettyPrinting()
+            .create()
+
+        val updatedJson = gson.toJson(jsonObject)
+
+        return Base64.encodeToString(
+            updatedJson.toByteArray(),
+            Base64.NO_WRAP
+        )
+
     }
 
     private suspend fun fetchGitHubData(){

@@ -17,6 +17,7 @@ import com.example.smarthomedevops.data.model.GitHubFileUpdateResponse
 
 interface GitHubApi {
 
+
     //LAB 1
     @GET ("repos/{owner}/{repo}/pulls")
     suspend fun getOpenPullRequests(
@@ -41,7 +42,6 @@ interface GitHubApi {
         @Path("pull_number") pullNumber:Int,
         @Body body : GitHubPRUpdateRequest
     ): GitHubPullRequest
-
 
     @GET("repos/{owner}/{repo}/contents/{path}")
     suspend fun getFileContent(
