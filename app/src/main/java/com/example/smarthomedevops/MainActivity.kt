@@ -25,6 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 
 
 
@@ -57,6 +59,13 @@ fun GitOpsScreen(
     viewModel: GitHubViewModel,
     modifier: Modifier = Modifier
 ){
+    val buttonShape = RoundedCornerShape(2.dp)
+
+    val buttonColors = ButtonDefaults.buttonColors(
+        containerColor = Color.LightGray
+    )
+
+
     val backgroundColor = if (uiState.securityAlert) {
         Color.Red
     } else { Color.Green}
@@ -100,11 +109,21 @@ fun GitOpsScreen(
             {
                 Button(onClick = {
                     viewModel.forceMerge()
-                }) { Text(text = "Force Merge") }
+                },
+                    shape = buttonShape,
+                    colors = buttonColors
+                ) { Text(
+                    text = "Force Merge",
+                    color = Color.Black) }
 
                 Button(onClick = {
                     viewModel.forceReject()
-                }) { Text(text = "Force Reject") }
+                },
+                    shape = buttonShape,
+                    colors = buttonColors
+                ) { Text(
+                    text = "Force Reject",
+                    color = Color.Black) }
             }
 
         } else {
